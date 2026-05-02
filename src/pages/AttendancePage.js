@@ -258,7 +258,7 @@ function AttendancePage() {
                 className="bg-white text-green-700 px-6 py-2.5 rounded-xl flex items-center gap-2 font-black text-xs uppercase tracking-widest shadow-xl hover:scale-105 transition active:scale-95"
               >
                 {isDownloading ? <div className="w-4 h-4 border-2 border-green-700 border-t-transparent rounded-full animate-spin" /> : <FileText size={18} />}
-                Export Intelligence
+                Download Report
               </button>
             </div>
           </div>
