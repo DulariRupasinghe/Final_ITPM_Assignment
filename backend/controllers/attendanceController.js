@@ -352,7 +352,7 @@ exports.generateStudentReport = async (req, res) => {
 
     const timestamp = new Date().toISOString().split('T')[0];
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename=Official_Transcript_${timestamp}.pdf`);
+    res.setHeader('Content-Disposition', `attachment; filename=Student_Attendance_Report.pdf`);
 
     doc.pipe(res);
 
@@ -379,67 +379,56 @@ exports.generateStudentReport = async (req, res) => {
       doc.text('AUTHENTIC TRANSCRIPT', -100, 400, { align: 'center', width: 800 });
       doc.restore();
 
-      // Professional Header
-      doc.rect(0, 0, 612, 140).fill('#1e293b');
+      // Dark Header
+      doc.rect(0, 0, 612, 120).fill('#1e293b');
       
-      // University Logo
       try {
         if (fs.existsSync(logoPath)) {
-          doc.image(logoPath, 40, 35, { width: 60 });
+          doc.image(logoPath, 40, 30, { width: 50 });
         }
       } catch (e) {}
 
-      doc.fillColor('#ffffff').fontSize(26).font('Helvetica-Bold').text('OFFICIAL ACADEMIC AUDIT', 115, 45);
-      doc.fontSize(10).font('Helvetica').fillColor('#94a3b8').text('ADVANCED STUDENT MONITORING & ELIGIBILITY TRANSCRIPT', 115, 80);
+      doc.fillColor('#ffffff').fontSize(24).font('Helvetica-Bold').text('UNIVERSITY ACADEMIC REPORT', 105, 45);
+      doc.fontSize(10).font('Helvetica').fillColor('#94a3b8').text(`DETAILED ATTENDANCE & ELIGIBILITY: ${student.fullName || 'John Doe'} (${student.studentId || 'IT2024001'})`, 105, 75);
       
-      doc.fontSize(8).fillColor('#ffffff').text(`DOCUMENT ID: ${Math.random().toString(36).substring(7).toUpperCase()}`, 450, 45, { align: 'right', width: 120 });
-      doc.text(`ISSUED ON: ${new Date().toLocaleDateString()}`, 450, 60, { align: 'right', width: 120 });
+      doc.fontSize(8).fillColor('#ffffff').text(`Generated: ${new Date().toLocaleDateString()},`, 450, 45, { align: 'right', width: 120 });
+      doc.text(`${new Date().toLocaleTimeString()}`, 450, 55, { align: 'right', width: 120 });
       
-      let y = 160;
-      // Student Identity Card
-      doc.rect(40, y, 532, 80).fill('#f8fafc').strokeColor('#e2e8f0').lineWidth(1).stroke();
-      doc.fillColor('#1e293b').fontSize(11).font('Helvetica-Bold').text('STUDENT IDENTITY', 55, y + 15);
-      doc.fontSize(16).text((student.fullName || 'UNKNOWN STUDENT').toUpperCase(), 55, y + 35);
-      doc.fontSize(10).font('Helvetica').fillColor('#64748b').text(`ID: ${student.studentId} | Program: ${student.program || 'B.Sc. Software Engineering'}`, 55, y + 55);
+      let y = 140;
+      // Student Identity Card (Gray Box)
+      doc.rect(40, y, 532, 70).fill('#f8fafc').strokeColor('#f1f5f9').stroke();
       
-      // Global Eligibility Summary
+      doc.fillColor('#475569').fontSize(9).font('Helvetica-Bold').text('Student Name:', 60, y + 15);
+      doc.fillColor('#1e293b').fontSize(9).font('Helvetica').text(student.fullName || 'John Doe', 140, y + 15);
+      
+      doc.fillColor('#475569').fontSize(9).font('Helvetica-Bold').text('Student ID:', 60, y + 35);
+      doc.fillColor('#1e293b').fontSize(9).font('Helvetica').text(student.studentId || 'IT2024001', 140, y + 35);
+
+      doc.fillColor('#475569').fontSize(9).font('Helvetica-Bold').text('Enrolled Program:', 280, y + 15);
+      doc.fillColor('#1e293b').fontSize(9).font('Helvetica').text(student.program || 'B.Sc. in Software Engineering', 380, y + 15);
+
       const studentRecords = attendanceRecords.filter(r => r.studentId === student.studentId);
       const total = sessions.length;
       const present = studentRecords.filter(r => r.status === 'PRESENT').length;
       const rate = total === 0 ? 0 : (present / total) * 100;
       const eligible = rate >= 80;
 
-      doc.rect(380, y + 10, 180, 60).fill(eligible ? '#f0fdf4' : '#fef2f2').strokeColor(eligible ? '#bbf7d0' : '#fecaca').stroke();
-      doc.fillColor(eligible ? '#166534' : '#991b1b').fontSize(8).font('Helvetica-Bold').text('ACADEMIC STANDING', 395, y + 20);
-      doc.fontSize(18).text(`${rate.toFixed(1)}%`, 395, y + 35);
-      doc.fontSize(10).text(eligible ? 'ELIGIBLE' : 'INELIGIBLE', 395, y + 55);
+      doc.fillColor('#475569').fontSize(9).font('Helvetica-Bold').text('Global Eligibility:', 280, y + 35);
+      doc.fillColor(eligible ? '#166534' : '#991b1b').fontSize(12).font('Helvetica-Bold').text(`${rate.toFixed(1)}% - ${eligible ? 'ELIGIBLE' : 'INELIGIBLE'}`, 380, y + 35);
 
-      y += 100;
+      y += 90;
 
-      // Executive Metrics
-      const metrics = [
-        { label: 'TOTAL SESSIONS', value: total, color: '#3b82f6' },
-        { label: 'PRESENT LOGS', value: present, color: '#10b981' },
-        { label: 'ABSENT LOGS', value: total - present, color: '#f43f5e' }
-      ];
-
-      metrics.forEach((m, i) => {
-        const mx = 40 + (i * 185);
-        doc.rect(mx, y, 175, 50).fill('#ffffff').strokeColor('#f1f5f9').stroke();
-        doc.fillColor('#94a3b8').fontSize(7).font('Helvetica-Bold').text(m.label, mx + 15, y + 15);
-        doc.fillColor('#1e293b').fontSize(16).text(m.value, mx + 15, y + 28);
-      });
 
       y += 70;
 
       // Detailed Audit Table
       doc.rect(40, y, 532, 25).fill('#1e293b');
       doc.fillColor('#ffffff').fontSize(8).font('Helvetica-Bold');
-      doc.text('DATE', 55, y + 10);
-      doc.text('CODE', 110, y + 10);
-      doc.text('ACADEMIC MODULE', 160, y + 10);
-      doc.text('LECTURER', 380, y + 10);
-      doc.text('STATUS', 500, y + 10);
+      doc.text('DATE', 55, y + 8);
+      doc.text('MODULE CODE', 130, y + 8);
+      doc.text('MODULE NAME', 230, y + 8);
+      doc.text('LECTURER', 400, y + 8);
+      doc.text('STATUS', 530, y + 8);
       y += 25;
 
       for (let i = 0; i < sessions.length; i++) {
@@ -458,11 +447,11 @@ exports.generateStudentReport = async (req, res) => {
         
         doc.fillColor('#475569').font('Helvetica').fontSize(8);
         doc.text(new Date(s.date || Date.now()).toLocaleDateString(), 55, y + 6);
-        doc.text(s.moduleCode || 'COR101', 110, y + 6);
-        doc.text(s.moduleName?.substring(0, 40) || 'N/A', 160, y + 6);
-        doc.text(s.lecturerName?.substring(0, 20) || 'N/A', 380, y + 6);
+        doc.text(s.moduleCode || 'N/A', 130, y + 6);
+        doc.text(s.moduleName?.substring(0, 30) || 'N/A', 230, y + 6);
+        doc.text(s.lecturerName?.substring(0, 20) || 'N/A', 400, y + 6);
         
-        doc.fillColor(isPresent ? '#166534' : '#991b1b').font('Helvetica-Bold').text(isPresent ? 'VERIFIED' : 'ABSENT', 500, y + 6);
+        doc.fillColor(isPresent ? '#166534' : '#991b1b').font('Helvetica-Bold').text(isPresent ? 'PRESENT' : 'ABSENT', 530, y + 6);
         y += 20;
       }
 

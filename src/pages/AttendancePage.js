@@ -114,7 +114,7 @@ function AttendancePage() {
 
   const downloadPerfectReport = async () => {
     setIsDownloading(true);
-    showNotification('Preparing Official Academic Registry...', 'info');
+    showNotification('Generating Student Attendance Report...', 'info');
     try {
       const response = await axios.get('http://localhost:5000/api/attendance/student-report', {
         responseType: 'blob'
@@ -127,8 +127,7 @@ function AttendancePage() {
       }
 
       const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
-      const timestamp = new Date().toISOString().split('T')[0];
-      const filename = `Official_Academic_Registry_${timestamp}.pdf`;
+      const filename = `Student_Attendance_Report.pdf`;
       
       const a = document.createElement('a');
       a.href = url;
@@ -137,7 +136,7 @@ function AttendancePage() {
       a.click();
       a.remove();
       window.URL.revokeObjectURL(url);
-      showNotification('Official Registry downloaded successfully.');
+      showNotification('Report downloaded successfully.');
     } catch (err) {
       console.error(err);
       showNotification(err.message || 'Official Registry generation failed.', 'error');
