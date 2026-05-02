@@ -96,12 +96,12 @@ const Home = () => {
       <section className="relative pt-24 pb-48 md:pt-32 md:pb-80 bg-gradient-to-r from-green-600 to-green-800 overflow-hidden">
         <div className="absolute inset-0 opacity-40">
           <img 
-            src="https://images.unsplash.com/photo-1523050853064-dbad323b7ff3?auto=format&fit=crop&q=80" 
+            src="https://images.unsplash.com/photo-1541339907198-e08759df9a73?auto=format&fit=crop&q=80" 
             className="w-full h-full object-cover"
             alt="Campus"
           />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-r from-green-600/60 to-green-800/60"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-green-800/90 to-green-900/70"></div>
 
 
         
@@ -117,6 +117,9 @@ const Home = () => {
               <p className="text-xl text-green-50/80 max-w-2xl leading-relaxed">
                 Welcome to our unified academic ecosystem. Access your essential student services, track your progress, and manage your campus life with ease.
               </p>
+              <button className="bg-white text-green-700 px-8 py-3 rounded-full flex items-center gap-3 font-bold hover:bg-green-50 transition-all shadow-xl group active:scale-95 w-fit">
+                Apply Now <ChevronRight className="group-hover:translate-x-1 transition-transform" size={18} />
+              </button>
             </div>
             
             <div className="flex-1"></div>
