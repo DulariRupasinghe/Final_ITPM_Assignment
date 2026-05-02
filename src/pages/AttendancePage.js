@@ -126,16 +126,22 @@ function AttendancePage() {
         throw new Error(error.message || 'Generation failed');
       }
 
-      const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
-      const filename = `Student_Attendance_Report.pdf`;
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      const filename = 'Student_Attendance_Report.pdf';
       
       const a = document.createElement('a');
+      a.style.display = 'none';
       a.href = url;
-      a.download = filename;
+      a.setAttribute('download', filename);
       document.body.appendChild(a);
       a.click();
-      a.remove();
-      window.URL.revokeObjectURL(url);
+      
+      setTimeout(() => {
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      }, 100);
+      
       showNotification('Report downloaded successfully.');
     } catch (err) {
       console.error(err);
