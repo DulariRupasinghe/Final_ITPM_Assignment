@@ -82,23 +82,35 @@ function AttendancePage() {
       return;
     }
 
-    const newRecord = {
-      _id: 'new-' + Date.now(),
-      studentId: formData.studentId,
-      sessionId: {
+    try {
+      await axios.post('http://localhost:5000/api/attendance/manual-mark', {
+        studentId: formData.studentId,
         moduleName: formData.moduleName,
         lecturerName: formData.lecturerName,
-        date: new Date().toISOString()
-      },
-      status: formData.status,
-      createdAt: new Date()
-    };
+        status: formData.status
+      });
 
-    setRecords([newRecord, ...records]);
-    setShowModal(false);
-    setFormData({ studentId: '', moduleName: '', lecturerName: '', status: 'PRESENT' });
-    setFormErrors({});
-    showNotification('Member added to current session ledger.');
+      const newRecord = {
+        _id: 'new-' + Date.now(),
+        studentId: formData.studentId,
+        sessionId: {
+          moduleName: formData.moduleName,
+          lecturerName: formData.lecturerName,
+          date: new Date().toISOString()
+        },
+        status: formData.status,
+        createdAt: new Date()
+      };
+
+      setRecords([newRecord, ...records]);
+      setShowModal(false);
+      setFormData({ studentId: '', moduleName: '', lecturerName: '', status: 'PRESENT' });
+      setFormErrors({});
+      showNotification('Member synchronized with academic ledger.');
+    } catch (err) {
+      console.error(err);
+      showNotification('Manual sync failed. Check connection.', 'error');
+    }
   };
 
   useEffect(() => {

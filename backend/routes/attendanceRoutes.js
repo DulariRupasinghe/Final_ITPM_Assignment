@@ -16,6 +16,7 @@ router.get('/analytics/report', controller.generateAnalyticsReport);
 router.post('/generate-qr', controller.generateSessionQR);
 router.put('/record/:id', controller.updateAttendance);
 router.delete('/record/:id', controller.deleteAttendance);
+router.post('/manual-mark', controller.manualMark);
 router.get('/student-report', controller.generateStudentReport);
 
 router.get('/sessions', async (req, res) => {

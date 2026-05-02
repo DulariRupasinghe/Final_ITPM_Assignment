@@ -360,14 +360,30 @@ exports.generateStudentReport = async (req, res) => {
     const Session = require('../models/Session');
     const Attendance = require('../models/Attendance');
 
-    const students = await User.find({ role: 'student' });
-    const sessions = await Session.find().sort({ date: -1 });
     const attendanceRecords = await Attendance.find();
+    
+    // Get unique student IDs from attendance records to ensure "all records" are included
+    const attendanceStudentIds = [...new Set(attendanceRecords.map(r => r.studentId))];
+    const userStudents = await User.find({ role: 'student' });
+    const userStudentIds = userStudents.map(u => u.studentId);
+    
+    // Merge all unique student IDs
+    const allStudentIds = [...new Set([...attendanceStudentIds, ...userStudentIds])];
+    
+    const sessions = await Session.find().sort({ date: -1 });
 
     const logoPath = path.join(__dirname, '../assets/logo.png');
 
     let isFirstPage = true;
-    for (const student of students) {
+    for (const studentId of allStudentIds) {
+      if (!studentId) continue;
+      
+      const student = userStudents.find(u => u.studentId === studentId) || { 
+        studentId, 
+        fullName: 'Unknown Student', 
+        program: 'B.Sc. in Software Engineering' 
+      };
+
       if (!isFirstPage) doc.addPage();
       isFirstPage = false;
 
@@ -610,3 +626,5 @@ exports.generateAnalyticsReport = async (req, res) => {
     res.status(500).json({ message: "Analytics report error" });
   }
 };
+e x p o r t s . m a n u a l M a r k   =   a s y n c   ( r e q ,   r e s )   = >   {   t r y   {   c o n s t   S e s s i o n   =   r e q u i r e ( ' . . / m o d e l s / S e s s i o n ' ) ;   c o n s t   A t t e n d a n c e   =   r e q u i r e ( ' . . / m o d e l s / A t t e n d a n c e ' ) ;   c o n s t   {   s t u d e n t I d ,   m o d u l e N a m e ,   l e c t u r e r N a m e ,   s t a t u s   }   =   r e q . b o d y ;   l e t   s e s s i o n   =   a w a i t   S e s s i o n . f i n d O n e ( {   m o d u l e N a m e ,   l e c t u r e r N a m e   } ) . s o r t ( {   d a t e :   - 1   } ) ;   i f   ( ! s e s s i o n )   {   s e s s i o n   =   n e w   S e s s i o n ( {   m o d u l e N a m e ,   m o d u l e C o d e :   ' M A N U A L ' ,   l e c t u r e r N a m e ,   d a t e :   n e w   D a t e ( ) ,   s t a r t T i m e :   n e w   D a t e ( ) . t o L o c a l e T i m e S t r i n g ( ) ,   e n d T i m e :   n e w   D a t e ( D a t e . n o w ( )   +   3 6 0 0 0 0 0 ) . t o L o c a l e T i m e S t r i n g ( ) ,   e x p i r y T i m e :   n e w   D a t e ( D a t e . n o w ( )   +   3 6 0 0 0 0 0 )   } ) ;   a w a i t   s e s s i o n . s a v e ( ) ;   }   c o n s t   a t t e n d a n c e   =   n e w   A t t e n d a n c e ( {   s t u d e n t I d ,   s e s s i o n I d :   s e s s i o n . _ i d ,   s t a t u s :   s t a t u s   | |   ' P R E S E N T '   } ) ;   a w a i t   a t t e n d a n c e . s a v e ( ) ;   r e s . j s o n ( {   s u c c e s s :   t r u e ,   m e s s a g e :   ' M a n u a l   r e c o r d   s y n c h r o n i z e d '   } ) ;   }   c a t c h   ( e r r )   {   c o n s o l e . e r r o r ( e r r ) ;   r e s . s t a t u s ( 5 0 0 ) . j s o n ( {   m e s s a g e :   ' M a n u a l   s y n c   f a i l e d '   } ) ;   }   } ;  
+ 
