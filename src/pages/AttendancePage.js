@@ -562,13 +562,6 @@ function AttendancePage() {
                   {filteredRecords.length} Records
                 </span>
                 <button 
-                  onClick={downloadGlobalReport}
-                  className="bg-white text-gray-900 border border-gray-200 px-4 py-2 rounded-xl flex items-center gap-2 font-black text-[10px] uppercase tracking-widest hover:bg-gray-50 transition shadow-sm active:scale-95 disabled:opacity-50"
-                  disabled={isDownloading}
-                >
-                  <FileText size={16} className="text-blue-600" /> Download Report
-                </button>
-                <button 
                   onClick={() => setShowModal(true)}
                   className="bg-green-600 text-white px-4 py-2 rounded-xl flex items-center gap-2 font-black text-[10px] uppercase tracking-widest hover:bg-green-700 transition shadow-lg shadow-green-200 active:scale-95"
                 >
