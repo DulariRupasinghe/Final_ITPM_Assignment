@@ -38,11 +38,12 @@ const Home = () => {
   }, []);
 
   const navLinks = [
-    { label: 'Attendance', path: '/attendance' },
-    { label: 'Analysis', path: '/analytics' },
-    { label: 'FAQ & Support', path: '/feedback' },
-    { label: 'Scan QR', path: '/scan' },
-    { label: 'Portal', path: '/dashboard' },
+    { label: 'Home', path: '/' },
+    { label: 'Programs', path: '#' },
+    { label: 'Admissions', path: '#' },
+    { label: 'Student Life', path: '#' },
+    { label: 'Contact', path: '#' },
+    { label: 'IR Dashboard', path: '/attendance' },
   ];
 
   return (
@@ -65,7 +66,7 @@ const Home = () => {
               <button
                 key={item.label}
                 onClick={() => navigate(item.path)}
-                className={`text-sm font-bold transition-all hover:text-green-300 ${
+                className={`text-sm font-semibold transition-all hover:text-green-300 ${
                   scrolled ? 'text-gray-700 hover:text-green-600' : 'text-white'
                 }`}
               >
@@ -73,16 +74,15 @@ const Home = () => {
               </button>
             ))}
             
-            <div className="h-6 w-[1px] bg-white/20 mx-2"></div>
-            
             <button 
-              onClick={() => navigate('/admin-console')}
-              className={`flex items-center gap-2 text-sm font-black uppercase tracking-wider ${
-                scrolled ? 'text-green-700' : 'text-white hover:text-green-300'
+              onClick={() => navigate('/login')}
+              className={`px-6 py-2 rounded-lg font-bold text-sm transition-all ${
+                scrolled 
+                  ? 'bg-green-700 text-white hover:bg-green-800 shadow-md' 
+                  : 'bg-white text-green-700 hover:bg-green-50'
               }`}
             >
-              <LayoutDashboard size={18} />
-              ADMIN
+              Login
             </button>
           </div>
 
@@ -92,52 +92,50 @@ const Home = () => {
         </div>
       </nav>
 
-      {/* Hero Section - Professional & Academic */}
-      <section className="relative pt-24 pb-48 md:pt-32 md:pb-80 bg-gradient-to-r from-green-600 to-green-800 overflow-hidden">
-        <div className="absolute inset-0 opacity-40">
+      {/* Hero Section - Redesigned to match request */}
+      <section className="relative pt-32 pb-48 md:pt-48 md:pb-96 bg-gradient-to-r from-green-700 to-green-900 overflow-hidden">
+        <div className="absolute inset-0 opacity-30">
           <img 
-            src="https://images.unsplash.com/photo-1523050853064-dbad323b7ff3?auto=format&fit=crop&q=80" 
+            src="https://images.unsplash.com/photo-1541339907198-e08759df9a73?auto=format&fit=crop&q=80" 
             className="w-full h-full object-cover"
             alt="Campus"
           />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-r from-green-600/60 to-green-800/60"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-green-800/80 to-green-900/60"></div>
 
-
-        
         <div className="container mx-auto px-6 relative z-10">
-          <div className="flex flex-col md:flex-row items-start gap-12">
-            <div className="flex-1 text-center md:text-left space-y-5">
-              <div className="inline-block px-4 py-1 rounded-full bg-white/10 text-white text-xs font-bold uppercase tracking-widest border border-white/20">
-                Official University Portal
-              </div>
-              <h1 className="text-5xl md:text-7xl font-bold text-white leading-tight">
-                Empowering the <span className="text-green-300">Next Generation</span> of Leaders
+          <div className="flex flex-col lg:flex-row items-center gap-16">
+            <div className="flex-1 text-left space-y-8 animate-in fade-in slide-in-from-left duration-700">
+              <h1 className="text-6xl md:text-8xl font-bold text-white leading-tight tracking-tighter">
+                Shape Your Future at <br/>
+                <span className="text-green-400">University of Excellence</span>
               </h1>
-              <p className="text-xl text-green-50/80 max-w-2xl leading-relaxed">
-                Welcome to our unified academic ecosystem. Access your essential student services, track your progress, and manage your campus life with ease.
+              <p className="text-xl text-white/90 max-w-xl leading-relaxed font-medium">
+                Join a community of innovators, thinkers, and leaders. Experience world-class education with state-of-the-art facilities.
               </p>
+              <button className="bg-white text-green-700 px-8 py-4 rounded-full flex items-center gap-3 font-bold hover:bg-green-50 transition-all shadow-2xl group active:scale-95">
+                Apply Now <ChevronRight className="group-hover:translate-x-1 transition-transform" size={20} />
+              </button>
             </div>
             
-            <div className="flex-1"></div>
-            
-            <div className="flex-1 relative h-[600px]">
-              <div className="absolute top-[80%] left-1/2 -translate-x-1/2 -translate-y-1/2 md:translate-x-0 md:left-auto md:right-[-25%] w-[160%] md:w-[230%] z-20">
+            <div className="flex-1 relative">
+              <div className="relative z-20 animate-in zoom-in duration-1000">
                 <img 
                   src={studyingGirl} 
-                  className="rounded-[5.5rem] shadow-[0_80px_160px_-40px_rgba(0,0,0,0.8)] w-full border-none"
-                  alt="Student Life"
+                  className="rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] w-full object-cover h-[500px] border-[12px] border-white/10 backdrop-blur-xl"
+                  alt="Student"
                 />
               </div>
-              <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-green-400/40 rounded-full blur-[200px]"></div>
+              {/* Background Glow */}
+              <div className="absolute -top-20 -right-20 w-[500px] h-[500px] bg-green-400/20 rounded-full blur-[120px]"></div>
             </div>
           </div>
         </div>
         
         {/* Wavy bottom divider */}
-        <div className="absolute bottom-0 left-0 right-0">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="w-full">
-            <path fill="#f9fafb" fillOpacity="1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+        <div className="absolute bottom-0 left-0 right-0 leading-[0]">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="w-full h-auto">
+            <path fill="#ffffff" fillOpacity="1" d="M0,160L60,176C120,192,240,224,360,213.3C480,203,600,149,720,133.3C840,117,960,139,1080,160C1200,181,1320,203,1380,213.3L1440,224L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"></path>
           </svg>
         </div>
       </section>
