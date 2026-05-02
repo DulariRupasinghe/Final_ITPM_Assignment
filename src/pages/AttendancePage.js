@@ -39,6 +39,9 @@ function AttendancePage() {
   const [isDownloading, setIsDownloading] = useState(false);
   const [filterType, setFilterType] = useState('name');
   const [filterValue, setFilterValue] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [formData, setFormData] = useState({ studentId: '', moduleName: '', lecturerName: '', status: 'PRESENT' });
+  const [formErrors, setFormErrors] = useState({});
 
   const fetchRecords = useCallback(async () => {
     setLoading(true);
@@ -64,6 +67,39 @@ function AttendancePage() {
       setLoading(false);
     }
   }, []);
+
+  const handleAddMember = (e) => {
+    e.preventDefault();
+    const errors = {};
+    if (!formData.studentId) errors.studentId = 'Student ID is required';
+    else if (!/^IT\d{7}$/.test(formData.studentId)) errors.studentId = 'Format: IT + 7 digits (e.g. IT2024001)';
+    
+    if (!formData.moduleName) errors.moduleName = 'Module name is required';
+    if (!formData.lecturerName) errors.lecturerName = 'Lecturer name is required';
+
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+    }
+
+    const newRecord = {
+      _id: 'new-' + Date.now(),
+      studentId: formData.studentId,
+      sessionId: {
+        moduleName: formData.moduleName,
+        lecturerName: formData.lecturerName,
+        date: new Date().toISOString()
+      },
+      status: formData.status,
+      createdAt: new Date()
+    };
+
+    setRecords([newRecord, ...records]);
+    setShowModal(false);
+    setFormData({ studentId: '', moduleName: '', lecturerName: '', status: 'PRESENT' });
+    setFormErrors({});
+    showNotification('Member added to current session ledger.');
+  };
 
   useEffect(() => {
     fetchRecords();
@@ -222,6 +258,107 @@ function AttendancePage() {
 
   return (
     <div className="min-h-screen bg-[#f8fafc] flex flex-col relative">
+      {/* Add Member Modal */}
+      {showModal && (
+        <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl border border-white overflow-hidden animate-in zoom-in-95 duration-300">
+            <div className="bg-gradient-to-r from-green-600 to-green-800 p-8 text-white relative">
+              <button 
+                onClick={() => setShowModal(false)}
+                className="absolute top-6 right-6 p-2 bg-white/10 rounded-full hover:bg-white/20 transition"
+              >
+                <XCircle size={20} />
+              </button>
+              <h2 className="text-2xl font-black uppercase tracking-tighter">Add Session Member</h2>
+              <p className="text-green-100/70 text-[10px] font-bold uppercase tracking-widest mt-1">Manual Attendance Override Protocol</p>
+            </div>
+            
+            <form onSubmit={handleAddMember} className="p-8 space-y-6">
+              <div className="space-y-4">
+                <div>
+                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">Student Identity ID</label>
+                  <input 
+                    type="text"
+                    placeholder="IT2024001"
+                    className={`w-full px-5 py-3.5 bg-gray-50 border rounded-2xl outline-none font-bold text-gray-700 transition ${
+                      formErrors.studentId ? 'border-red-300 bg-red-50' : 'border-gray-100 focus:border-green-500'
+                    }`}
+                    value={formData.studentId}
+                    onChange={(e) => setFormData({...formData, studentId: e.target.value.toUpperCase()})}
+                  />
+                  {formErrors.studentId && <p className="text-[10px] font-bold text-red-500 mt-1.5 ml-2">{formErrors.studentId}</p>}
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">Module Name</label>
+                    <input 
+                      type="text"
+                      placeholder="e.g. Data Science"
+                      className={`w-full px-5 py-3.5 bg-gray-50 border rounded-2xl outline-none font-bold text-gray-700 transition ${
+                        formErrors.moduleName ? 'border-red-300 bg-red-50' : 'border-gray-100 focus:border-green-500'
+                      }`}
+                      value={formData.moduleName}
+                      onChange={(e) => setFormData({...formData, moduleName: e.target.value})}
+                    />
+                    {formErrors.moduleName && <p className="text-[10px] font-bold text-red-500 mt-1.5 ml-2">{formErrors.moduleName}</p>}
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">Lecturer</label>
+                    <input 
+                      type="text"
+                      placeholder="e.g. Dr. Silva"
+                      className={`w-full px-5 py-3.5 bg-gray-50 border rounded-2xl outline-none font-bold text-gray-700 transition ${
+                        formErrors.lecturerName ? 'border-red-300 bg-red-50' : 'border-gray-100 focus:border-green-500'
+                      }`}
+                      value={formData.lecturerName}
+                      onChange={(e) => setFormData({...formData, lecturerName: e.target.value})}
+                    />
+                    {formErrors.lecturerName && <p className="text-[10px] font-bold text-red-500 mt-1.5 ml-2">{formErrors.lecturerName}</p>}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">Verification Status</label>
+                  <div className="flex gap-3">
+                    {['PRESENT', 'ABSENT'].map(status => (
+                      <button
+                        key={status}
+                        type="button"
+                        onClick={() => setFormData({...formData, status})}
+                        className={`flex-1 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition border ${
+                          formData.status === status 
+                            ? (status === 'PRESENT' ? 'bg-green-600 text-white border-green-600' : 'bg-red-600 text-white border-red-600')
+                            : 'bg-gray-50 text-gray-400 border-gray-100 hover:bg-gray-100'
+                        }`}
+                      >
+                        {status}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-4 flex gap-3">
+                <button 
+                  type="button"
+                  onClick={() => setShowModal(false)}
+                  className="flex-1 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest text-gray-400 hover:text-gray-600 transition bg-gray-50"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit"
+                  className="flex-1 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest text-white bg-green-600 hover:bg-green-700 shadow-lg shadow-green-200 transition active:scale-95"
+                >
+                  Synchronize Member
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       {/* Toast Notification */}
       {notification && (
         <div className={`fixed top-24 right-8 z-[100] flex items-center gap-3 px-6 py-4 rounded-2xl shadow-2xl animate-in slide-in-from-right duration-300 ${
@@ -432,7 +569,7 @@ function AttendancePage() {
                   <FileText size={16} className="text-blue-600" /> Download Report
                 </button>
                 <button 
-                  onClick={() => alert("The Administrative Member Enrollment portal is currently in secure maintenance. Please contact the Registrar Office for manual student synchronization.")}
+                  onClick={() => setShowModal(true)}
                   className="bg-green-600 text-white px-4 py-2 rounded-xl flex items-center gap-2 font-black text-[10px] uppercase tracking-widest hover:bg-green-700 transition shadow-lg shadow-green-200 active:scale-95"
                 >
                   <UserPlus size={16} /> Add Member
