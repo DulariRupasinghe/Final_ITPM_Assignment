@@ -27,3 +27,9 @@ backend/node_modules
 backend/.env
 backend/*.pdf
 backend/test_report_new.pdf
+
+# playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

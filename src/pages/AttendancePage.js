@@ -68,7 +68,7 @@ function AttendancePage() {
     }
   }, []);
 
-  const handleAddMember = (e) => {
+  const handleAddMember = async (e) => {
     e.preventDefault();
     const errors = {};
     if (!formData.studentId) errors.studentId = 'Student ID is required';
