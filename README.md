@@ -1,4 +1,4 @@
-# 🎓 Student Management System - ITPM Final Assignment
+#  Student Management System - ITPM Final Assignment
 
 ![Project Status](https://img.shields.io/badge/Status-Complete-success)
 ![Version](https://img.shields.io/badge/Version-1.0.0-blue)
@@ -8,29 +8,29 @@ A premium, full-stack Student Management System designed for high-efficiency aca
 
 ---
 
-## 🚀 Key Features
+## Key Features
 
-### 📅 Attendance Management
+###  Attendance Management
 - **Smart Tracking**: Real-time attendance logging for students.
 - **Audit-Ready Reports**: High-fidelity PDF generation for academic audits.
 - **Interactive Dashboard**: Visual representation of attendance trends and statistics.
 
-### 🔐 Secure Authentication
+###  Secure Authentication
 - JWT-based authentication for secure access.
 - Role-based navigation and protected routes.
 
-### 📊 Modern UI/UX
+###  Modern UI/UX
 - Responsive design built with **Tailwind CSS**.
 - High-quality iconography using **Lucide React**.
 - Dynamic charts and analytics.
 
-### 🧪 Automated Quality Assurance
+###  Automated Quality Assurance
 - Full E2E test coverage using **Playwright**.
 - Automated navigation and authentication workflows.
 
 ---
 
-## 🛠️ Technology Stack
+##  Technology Stack
 
 | Layer | Technology |
 | :--- | :--- |
@@ -42,7 +42,7 @@ A premium, full-stack Student Management System designed for high-efficiency aca
 
 ---
 
-## 📦 Installation & Setup
+##  Installation & Setup
 
 ### 1. Clone the Repository
 ```bash
@@ -77,7 +77,7 @@ npm start
 
 ---
 
-## 🧪 Testing
+## Testing
 
 To run the automated E2E tests:
 
@@ -91,7 +91,7 @@ npx playwright show-report
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```text
 ├── backend/            # Express.js Server & MongoDB Models
@@ -108,10 +108,10 @@ npx playwright show-report
 
 ---
 
-## 📄 License
+## License
 
 Distributed under the MIT License. See `LICENSE` for more information.
 
 ---
 
-**Developed with ❤️ for the ITPM Final Assignment.**
+**Developed for the ITPM Final Assignment.**
